@@ -3,6 +3,8 @@
   "acronym": "GM",
   "name": "GoogleMaps",
   "description": "Renders a map for all geo coordinate entities.",
+  "version": "0.0.1",
+  "private": true,
   "block": {
     "component": {
       "file": "./neontetra/block.js"
