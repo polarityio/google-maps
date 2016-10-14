@@ -3,7 +3,11 @@
  </script>
  */
 polarity.export = PolarityComponent.extend({
-    map: null,
+    map: null,  
+	onPropertiesSet: function(integrationBlockSource){
+    // there is no default action for this method but it can be overridden to track block information
+	this.set('isCollapsed', false);
+  },
     initmap:  function() {
 
         if(this.get('block.isCollapsed'))
