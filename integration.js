@@ -39,7 +39,7 @@ var doLookup = function(entities, options, cb){
                             //add any tags that the user should know (right now just the first formatted address)
                             entityResults.push({
                                 entity: entity.value,
-                                result: {
+                                data: {
                                     entity_name:entity.value,
                                     tags: [resultsObject.results[0].formatted_address],
                                     details: entity
@@ -73,7 +73,7 @@ var doLookup = function(entities, options, cb){
                             //add any tags that the user should know (right now just the first formatted address)
                             entityResults.push({
                                 entity: entity.value,
-                                result: {
+                                data: {
                                     entity_name:entity.value,
                                     tags: [utils.format("Lat: %d, Long: %d",lat, lon)],
                                     details: entity
