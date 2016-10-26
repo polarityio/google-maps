@@ -1,7 +1,7 @@
+'use strict';
 
 //remember the script element we add so that we can remove it on apikey change
 var googleMapsApiScript = null;
-
 
 //load the google maps api script and add it to the head
 var initmaps = function(integration, userConfig, userOptions){
