@@ -23,8 +23,8 @@
       "description": "This is a description",
       "default": "",
       "type": "text",
-      "user-can-edit": true,
-      "admin-only": false
+      "userCanEdit": true,
+      "adminOnly": false
     }
   ],
   "dependencies": {
