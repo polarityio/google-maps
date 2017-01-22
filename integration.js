@@ -74,8 +74,7 @@ var doLookup = function(entities, options, cb){
                             entityResults.push({
                                 entity: entity,
                                 data: {
-                                    entity_name:entity.value,
-                                    tags: [utils.format("Lat: %d, Long: %d",lat, lon)],
+                                    summary: [utils.format("Lat: %d, Long: %d",lat, lon)],
                                     details: entity
                                 }
                             });
@@ -89,29 +88,10 @@ var doLookup = function(entities, options, cb){
 			done();
 		}
     },function(){
-        cb(null, entityResults.length, entityResults);
+        cb(null, entityResults);
     });
-
-
-
 };
-
-var doDetailedLookup = function(entities, cb){
-
-    var results = new Array();
-    entities.forEach(function(entity){
-        results.push({
-            entity: entity.value,
-            result: "Test integration enriched info"
-        })
-    });
-
-    cb(null, entities.length, results);
-};
-
-
 
 module.exports = {
-    doLookup: doLookup,
-    doDetailedLookup: doDetailedLookup
+    doLookup: doLookup
 };

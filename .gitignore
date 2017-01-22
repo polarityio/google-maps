@@ -1,1 +1,4 @@
 node_modules/
+# Ignore IntelliJ Project Information
+*.iml
+.idea/
