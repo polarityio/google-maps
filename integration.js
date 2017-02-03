@@ -40,8 +40,7 @@ var doLookup = function(entities, options, cb){
                             entityResults.push({
                                 entity: entity,
                                 data: {
-                                    entity_name:entity.value,
-                                    tags: [resultsObject.results[0].formatted_address],
+                                    summary: [resultsObject.results[0].formatted_address],
                                     details: entity
                                 }
                             });
