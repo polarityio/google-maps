@@ -1,10 +1,7 @@
 module.exports = {
     "name": "GoogleMaps",
     "acronym": "GM",
-    "logging": {level: 'debug'},
-    //"styles": [
-      //  "./styles/googlemaps.less"
-    //],
+    "logging": {level: 'trace'},
     "block": {
         "component": {
             "file": "./components/block.js"

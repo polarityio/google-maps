@@ -4,9 +4,13 @@ var _ = require('underscore');
 var rest = require('unirest');
 var async = require('async');
 var utils = require('util');
+var log = null;
 
 var streetReg = /\d{1,9} ([^\n\r0-9,]{2,100}, ([A-Za-z ]{1,20}\d{1,9}|\d{1,3}[A-Za-z ]{1-20})[, ]?[^\n\r0-9]{2,100}[, ]?|(N |S |E |W |north |south |east |west )?\d{1,9}[^\n\r0-9 ][^\n\r0-9]{2,100}|(N |S |E |W |north |south |east |west )?\d{1,9}[^\n\r0-9, ][^\n\r0-9,]{2,100},[A-Za-z ]{1,20}\d{1,9},?[^\n\r0-9,]{2,100},?|[^\n\r0-9,]{2,100},[A-Za-z ]{1,20}\d{1,9},?[^\n\r0-9]{2,100},?|[^\n\r0-9]{2,100})[, ](AL|AK|AS|AZ|AR|CA|CO|CT|DE|DC|FM|FL|GA|GU|HI|ID|IL|IN|IA|KS|KY|LA|ME|MH|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|MP|OH|OK|OR|PW|PA|PR|RI|SC|SD|TN|TX|UT|VT|VI|VA|WA|WV|WI|WY|Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New[ ]Hampshire|New[ ]Jersey|New[ ]Mexico|New[ ]York|North[ ]Carolina|North[ ]Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode[ ]Island|South[ ]Carolina|South[ ]Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West[ ]Virginia|Wisconsin|Wyoming)[, ]+\d{5}(?:-\d{4})?/i;
 
+function startup(logger){
+    log = logger;
+}
 
 var doLookup = function(entities, options, cb){
     if(typeof cb !== 'function'){
@@ -25,14 +29,13 @@ var doLookup = function(entities, options, cb){
     //look up all of the entities that are geo codes before continuing and push them into the entityResults
     async.each(entities, function(entity, done){
         if(entity.isGeo){
-            console.log("https://maps.googleapis.com/maps/api/geocode/json?latlng="+entity.latitude+","+entity.longitude+"&key="+options.apikey);
-
+            log.trace("https://maps.googleapis.com/maps/api/geocode/json?latlng="+entity.latitude+","+entity.longitude+"&key="+options.apikey);
             //do a reverse geocoding lookup using google maps
             rest.get("https://maps.googleapis.com/maps/api/geocode/json?latlng="+entity.latitude+","+entity.longitude+"&key="+options.apikey)
                 .end(function(response){
                     if( _.isObject(response.body) ){
                         var resultsObject = response.body;
-
+                        log.trace({resultsObject: resultsObject});
                         //if the status is OK and not an error
                         if(resultsObject.status === "OK"){
                             var tags = new Array();
@@ -52,14 +55,14 @@ var doLookup = function(entities, options, cb){
 
                 });
         }else if(streetReg.test(entity.value.trim())){
-            console.log("https://maps.googleapis.com/maps/api/geocode/json?address="+entity.value+"&key="+options.apikey);
+            log.trace("https://maps.googleapis.com/maps/api/geocode/json?address="+entity.value+"&key="+options.apikey);
 
             //do a reverse geocoding lookup using google maps
             rest.get("https://maps.googleapis.com/maps/api/geocode/json?address="+entity.value+"&key="+options.apikey)
                 .end(function(response){
                     if( _.isObject(response.body) ){
                         var resultsObject = response.body;
-
+                        log.trace({resultsObject: resultsObject});
                         //if the status is OK and not an error
                         if(resultsObject.status === "OK" && Array.isArray(resultsObject.results) && resultsObject.results.length > 0){
                             var tags = new Array();
@@ -93,5 +96,6 @@ var doLookup = function(entities, options, cb){
 };
 
 module.exports = {
-    doLookup: doLookup
+    doLookup: doLookup,
+    startup: startup
 };
