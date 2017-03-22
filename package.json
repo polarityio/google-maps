@@ -1,35 +1,13 @@
 {
   "main": "./integration.js",
-  "acronym": "GM",
   "name": "GoogleMaps",
   "description": "Renders a map for all geo coordinate entities.",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "private": true,
-  "block": {
-    "component": {
-      "file": "./neontetra/block.js"
-    },
-    "template": {
-      "file": "./neontetra/block.hbs"
-    }
-  },
-  "javascript": [
-    "./neontetra/vendor.js"
-  ],
-  "options": [
-    {
-      "key": "apikey",
-      "name": "API Key",
-      "description": "This is a description",
-      "default": "",
-      "type": "text",
-      "userCanEdit": true,
-      "adminOnly": false
-    }
-  ],
   "dependencies": {
-    "unirest": "^0.5.0",
+    "request": "^2.75",
     "lodash": "^4.16",
-    "async": "^2.0"
+    "async": "^2.0",
+    "unirest": "^0.5.0"
   }
 }

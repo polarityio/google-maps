@@ -1,4 +1,5 @@
 'use strict';
+
 var _ = require('underscore');
 var rest = require('unirest');
 var async = require('async');
@@ -51,7 +52,7 @@ var doLookup = function(entities, options, cb){
 
                 });
         }else if(streetReg.test(entity.value.trim())){
-			console.log("https://maps.googleapis.com/maps/api/geocode/json?address="+entity.value+"&key="+options.apikey);
+            console.log("https://maps.googleapis.com/maps/api/geocode/json?address="+entity.value+"&key="+options.apikey);
 
             //do a reverse geocoding lookup using google maps
             rest.get("https://maps.googleapis.com/maps/api/geocode/json?address="+entity.value+"&key="+options.apikey)
@@ -62,12 +63,12 @@ var doLookup = function(entities, options, cb){
                         //if the status is OK and not an error
                         if(resultsObject.status === "OK" && Array.isArray(resultsObject.results) && resultsObject.results.length > 0){
                             var tags = new Array();
-							var result = resultsObject.results[0];
-							var lat = result.geometry.location.lat;
-							var lon = result.geometry.location.lng;
-							
-							entity.longitude = lon;
-							entity.latitude = lat;
+                            var result = resultsObject.results[0];
+                            var lat = result.geometry.location.lat;
+                            var lon = result.geometry.location.lng;
+
+                            entity.longitude = lon;
+                            entity.latitude = lat;
 
                             //add any tags that the user should know (right now just the first formatted address)
                             entityResults.push({
@@ -84,8 +85,8 @@ var doLookup = function(entities, options, cb){
 
                 });
         }else{
-			done();
-		}
+            done();
+        }
     },function(){
         cb(null, entityResults);
     });
