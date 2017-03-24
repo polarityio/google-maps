@@ -2,9 +2,15 @@
 
 Polarity's Google Maps integration displays a google map for any recognized street addresses or latitude longitude pairs.
 
+| ![image](https://cloud.githubusercontent.com/assets/306319/24307579/21a9acf8-109b-11e7-9d13-c7d2f873cf0a.png)
+) |
+![image](https://cloud.githubusercontent.com/assets/306319/24307388/5c2b2448-109a-11e7-8d43-2f846460bf6a.png)
+|---|---|
+|*Address Recognition*|*Latitude Longitude Recognition*|
+
 ## Google Maps Settings
 
-The google-maps integration has one required option which is the `API Key`
+The only required option for the Google Maps integration is your API Key.
 
 ### API Key
 
@@ -71,7 +77,7 @@ service polarityd restart
 cd /app/polarity-server/integrations
 ```
 
-2. Clone a specific version of the wikipedia repo using git:
+2. Clone a specific version of the `google-maps` repo using git:
 
  ```bash
 git clone --branch <version> https://github.com/polarityio/google-maps.git
@@ -80,7 +86,7 @@ git clone --branch <version> https://github.com/polarityio/google-maps.git
 3. Change into the integration directory
 
  ```bash
-cd wikipedia
+cd google-maps
 ```
 
 4. Use `npm` to install the integration's dependencies
