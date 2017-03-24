@@ -1,7 +1,7 @@
 module.exports = {
     "name": "GoogleMaps",
     "acronym": "GM",
-    "logging": {level: 'trace'},
+    "logging": {level: 'info'},
     "block": {
         "component": {
             "file": "./components/block.js"
@@ -17,7 +17,7 @@ module.exports = {
         {
             "key": "apikey",
             "name": "API Key",
-            "description": "This is a description",
+            "description": "Your Google Maps API Key",
             "default": "",
             "type": "text",
             "userCanEdit": true,

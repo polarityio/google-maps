@@ -4,7 +4,7 @@
 var googleMapsApiScript = null;
 
 //load the google maps api script and add it to the head
-var initmaps = function(integration, userConfig, userOptions){
+var initMaps = function(integration, userConfig, userOptions){
     //remove and already existing script tag
     if(googleMapsApiScript !== null){
         document.getElementsByTagName("head")[0].removeChild(googleMapsApiScript);
@@ -21,4 +21,4 @@ var initmaps = function(integration, userConfig, userOptions){
 
 // onSettingsChange is called once when the integration loads and then
 // anytime the settings are changed
-onSettingsChange(initmaps);
+onSettingsChange(initMaps);
