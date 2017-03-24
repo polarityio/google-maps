@@ -86,9 +86,27 @@ function doLookup(entities, options, cb){
     },function(){
         cb(null, entityResults);
     });
-};
+}
+
+function _validateOptions(options) {
+    let errors = [];
+
+    if(typeof(options.apikey.value) !== 'string' || options.apikey.value.length === 0){
+        errors.push({
+            key: "apikey",
+            message: "You must provide a valid Google Maps API Key"
+        });
+    }
+
+    return errors;
+}
+
+function validateOptions(options, cb) {
+    cb(null, _validateOptions(options));
+}
 
 module.exports = {
     doLookup: doLookup,
-    startup: startup
+    startup: startup,
+    validateOptions: validateOptions
 };
