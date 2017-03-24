@@ -4,7 +4,7 @@ Polarity's Google Maps integration displays a google map for any recognized stre
 
 ## Google Maps Settings
 
-There are two main settings in the Wikipedia integration:
+The google-maps integration has one required option which is the `API Key`
 
 ### API Key
 
@@ -52,7 +52,7 @@ npm install
 8. Ensure the integration directory is owned by the `polarityd` user
  
  ```bash
-chown -R polarityd:polarityd /app/polarity-server/integrations/wikipedia
+chown -R polarityd:polarityd /app/polarity-server/integrations/google-maps
 ```
 
 9. Restart your Polarity-Server
@@ -74,7 +74,7 @@ cd /app/polarity-server/integrations
 2. Clone a specific version of the wikipedia repo using git:
 
  ```bash
-git clone --branch <version> https://github.com/polarityio/wikipedia.git
+git clone --branch <version> https://github.com/polarityio/google-maps.git
 ```
 
 3. Change into the integration directory
@@ -92,7 +92,7 @@ npm install
 5.  Ensure the integration directory is owned by the `polarityd` user
 
  ```bash
-chown -R polarityd:polarityd /app/polarity-server/integrations/wikipedia
+chown -R polarityd:polarityd /app/polarity-server/integrations/google-maps
 ```
 
 6. Restart your Polarity-Server
