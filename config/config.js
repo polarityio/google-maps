@@ -1,5 +1,5 @@
 module.exports = {
-    "name": "GoogleMaps",
+    "name": "Google Maps",
     "acronym": "GM",
     "logging": {level: 'info'},
     "block": {
