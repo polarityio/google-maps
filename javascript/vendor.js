@@ -10,13 +10,15 @@ var initMaps = function(integration, userConfig, userOptions){
         document.getElementsByTagName("head")[0].removeChild(googleMapsApiScript);
     }
 
-    //add the google map script element to the head of the document
-    var script = document.createElement("script");
-    script.setAttribute("src","https://maps.googleapis.com/maps/api/js?key="+userOptions.apikey);
-    document.getElementsByTagName("head")[0].appendChild(script);
+    if(typeof userOptions.apikey !== 'undefined' && userOptions.apikey.length > 0) {
+        //add the google map script element to the head of the document
+        var script = document.createElement("script");
+        script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?key=" + userOptions.apikey);
+        document.getElementsByTagName("head")[0].appendChild(script);
 
-    //remember the element
-    googleMapsApiScript = script;
+        //remember the element
+        googleMapsApiScript = script;
+    }
 };
 
 // onSettingsChange is called once when the integration loads and then

@@ -30,7 +30,7 @@ polarity.export = PolarityComponent.extend({
 
         google.maps.event.addListenerOnce(map, 'idle', function() {
             google.maps.event.trigger(map, 'resize');
-            map.setCenter(new google.maps.LatLng(a,b));
+            map.setCenter(new google.maps.LatLng(entity.latitude, entity.longitude));
         });
 
     }.observes('block.isCollapsed')
