@@ -28,12 +28,12 @@ function doLookup(entities, options, cb){
     async.each(entities, function(entity, next){
         if(entity.types.indexOf('custom.latLong') >= 0 && options.lookupLatLong){
             let latLong = entity.value.split(',');
-            let latitude = parseFloat(latLong[0]);
-            let longitude = parseFloat(latLong[1]);
+            entity.latitude = parseFloat(latLong[0]);
+            entity.longitude = parseFloat(latLong[1]);
 
-            log.trace("https://maps.googleapis.com/maps/api/geocode/json?latlng="+latitude+","+longitude+"&key="+options.apikey);
+            log.trace("https://maps.googleapis.com/maps/api/geocode/json?latlng="+entity.latitude+","+entity.longitude+"&key="+options.apikey);
             //do a reverse geocoding lookup using google maps
-            rest.get("https://maps.googleapis.com/maps/api/geocode/json?latlng="+latitude+","+longitude+"&key="+options.apikey)
+            rest.get("https://maps.googleapis.com/maps/api/geocode/json?latlng="+entity.latitude+","+entity.longitude+"&key="+options.apikey)
                 .end(function(response){
                     if( _.isObject(response.body) ){
                         let resultsObject = response.body;
