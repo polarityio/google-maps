@@ -26,10 +26,14 @@ function doLookup(entities, options, cb){
 
     //look up all of the entities that are geo codes before continuing and push them into the entityResults
     async.each(entities, function(entity, next){
-        if(entity.isGeo && options.lookupLatLong){
-            log.trace("https://maps.googleapis.com/maps/api/geocode/json?latlng="+entity.latitude+","+entity.longitude+"&key="+options.apikey);
+        if(entity.types.indexOf('custom.latLong') >= 0 && options.lookupLatLong){
+            let latLong = entity.value.split(',');
+            let latitude = parseFloat(latLong[0]);
+            let longitude = parseFloat(latLong[1]);
+
+            log.trace("https://maps.googleapis.com/maps/api/geocode/json?latlng="+latitude+","+longitude+"&key="+options.apikey);
             //do a reverse geocoding lookup using google maps
-            rest.get("https://maps.googleapis.com/maps/api/geocode/json?latlng="+entity.latitude+","+entity.longitude+"&key="+options.apikey)
+            rest.get("https://maps.googleapis.com/maps/api/geocode/json?latlng="+latitude+","+longitude+"&key="+options.apikey)
                 .end(function(response){
                     if( _.isObject(response.body) ){
                         let resultsObject = response.body;
