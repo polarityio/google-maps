@@ -52,7 +52,7 @@ function doLookup(entities, options, cb){
                     }
                     next();
                 });
-        }else if(entity.types.indexOf('custom.address') >= 0 && options.lookupAddress){
+        }else if(entity.types.indexOf('custom.unitedStatesPropertyAddress') >= 0 && options.lookupAddress){
             log.trace("https://maps.googleapis.com/maps/api/geocode/json?address="+entity.value+"&key="+options.apikey);
 
             //do a reverse geocoding lookup using google maps
