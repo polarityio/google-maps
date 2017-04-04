@@ -46,8 +46,8 @@ module.exports = {
         },
         {
             "key": "lookupAddress",
-            "name": "Lookup Street Addresses",
-            "description": "If checked, the integration will lookup street addresses",
+            "name": "Lookup US Street Addresses",
+            "description": "If checked, the integration will lookup street addresses in the United States",
             "default": true,
             "type": "boolean",
             "userCanEdit": true,
