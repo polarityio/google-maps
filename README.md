@@ -9,11 +9,11 @@ Polarity's Google Maps integration displays a google map for recognized street a
 |---|---|
 |*Address Recognition*|*Latitude Longitude Recognition*|
 
-## Compatibility
+## Polarity Server Compatibility
 
-| Google Maps Version | Polarity Server Version|
+| Google Maps Integration Version | Polarity Server Version|
 |---|---|
-|1.1.0-beta| > 2.4.x|
+|1.1.0-beta| >= 2.4.x|
 |1.0.x-beta| 2.3.x |
 
 
