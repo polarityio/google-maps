@@ -1,11 +1,21 @@
-# Polarity Google Maps Integration
+# Polarity Google Maps Integration 
 
-Polarity's Google Maps integration displays a google map for any recognized street addresses or latitude longitude pairs.
+[![Build Status](https://travis-ci.org/polarityio/google-maps.svg?branch=master)](https://travis-ci.org/polarityio/google-maps)
+
+Polarity's Google Maps integration displays a google map for recognized street addresses in the United States or latitude longitude pairs.
 
 | ![image](https://cloud.githubusercontent.com/assets/306319/24307579/21a9acf8-109b-11e7-9d13-c7d2f873cf0a.png) |
 ![image](https://cloud.githubusercontent.com/assets/306319/24307388/5c2b2448-109a-11e7-8d43-2f846460bf6a.png)
 |---|---|
 |*Address Recognition*|*Latitude Longitude Recognition*|
+
+## Polarity Server Compatibility
+
+| Google Maps Integration Version | Polarity Server Version|
+|---|---|
+|1.1.0-beta| >= 2.4.x|
+|1.0.x-beta| 2.3.x |
+
 
 ## Google Maps Settings
 
