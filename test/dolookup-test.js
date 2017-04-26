@@ -140,6 +140,23 @@ describe('doLookup()', function () {
         });
     });
 
+    it('should not lookup address if "lookupAddress" is false', function (done) {
+        integration.doLookup([{
+            type: 'custom',
+            types: ['custom.unitedStatesPropertyAddress'],
+            value: 'Southeast Fwy, Washington, DC 20003, USA'
+        }], {
+            apikey: 'aaa',
+            lookupLatLong: true,
+            lookupAddress: false
+        }, function (err, result) {
+            //console.info(JSON.stringify(result, null, 4));
+            expect(err).to.be.null;
+            expect(result).to.deep.equal([]);
+            done();
+        });
+    });
+
     it('should not do lookup if there is a type mismatch', function (done) {
         integration.doLookup([{
             type: 'custom',
