@@ -39,15 +39,7 @@ function doLookup(entities, options, cb){
                     if( _.isObject(response.body) ){
                         let resultsObject = response.body;
                         log.trace({resultsObject: resultsObject});
-                        let result = resultsObject.results[0];
 
-                        let lat = result.geometry.location.lat;
-                        let lon = result.geometry.location.lng;
-
-                        entity.longitude = lon;
-                        entity.latitude = lat;
-
-                        entity.value = util.format((Math.round(lat * 10000000)/10000000) + ", " + Math.round(lon *10000000)/10000000);
                         //if the status is OK and not an error
                         if(resultsObject.status === "OK"){
                             //add any tags that the user should know (right now just the first formatted address)
@@ -81,7 +73,7 @@ function doLookup(entities, options, cb){
                             entity.longitude = lon;
                             entity.latitude = lat;
 
-                            entity.value = util.format((Math.round(lat * 10000000)/10000000) + ", " + Math.round(lon *10000000)/100000000);
+                            entity.value = util.format("Lat: %d, Long: %d", lat, lon);
 
                             //add any tags that the user should know (right now just the first formatted address)
                             entityResults.push({
