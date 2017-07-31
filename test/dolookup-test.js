@@ -42,6 +42,7 @@ describe('doLookup()', function () {
             .reply(200, {
                 results: [
                     {
+                        formatted_address: "Southeast Fwy, Washington, DC 20003, USA",
                         geometry: {
                             "location": {
                                 "lat": 38.8796322,
@@ -121,7 +122,7 @@ describe('doLookup()', function () {
             let entity = {
                 type: 'custom',
                 types: ['custom.unitedStatesPropertyAddress'],
-                value: 'Southeast Fwy, Washington, DC 20003, USA',
+                value: 'Lat: 38.8796322, Long: -76.9990365',
                 latitude: 38.8796322,
                 longitude: -76.9990365
             };
@@ -129,6 +130,7 @@ describe('doLookup()', function () {
             expect(result).to.deep.equal([
                     {
                         entity: entity,
+                        displayValue: "Southeast Fwy, Washington, DC 20003, USA",
                         data: {
                             summary: [ "Lat: 38.8796322, Long: -76.9990365"],
                             details: entity
