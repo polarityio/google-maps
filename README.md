@@ -4,18 +4,10 @@
 
 Polarity's Google Maps integration displays a google map for recognized street addresses in the United States or latitude longitude pairs.
 
-| ![image](https://cloud.githubusercontent.com/assets/306319/24307579/21a9acf8-109b-11e7-9d13-c7d2f873cf0a.png) |
-![image](https://cloud.githubusercontent.com/assets/306319/24307388/5c2b2448-109a-11e7-8d43-2f846460bf6a.png)
+| ![image](https://user-images.githubusercontent.com/306319/40696616-87608682-6394-11e8-8057-37103d695bb4.png) |
+![image](https://user-images.githubusercontent.com/306319/40697040-7e78cd98-6396-11e8-9124-1203190c042b.png)
 |---|---|
 |*Address Recognition*|*Latitude Longitude Recognition*|
-
-## Polarity Server Compatibility
-
-| Google Maps Integration Version | Polarity Server Version|
-|---|---|
-|1.1.0-beta| >= 2.4.x|
-|1.0.x-beta| 2.3.x |
-
 
 ## Google Maps Settings
 
@@ -28,6 +20,7 @@ Your google maps API Key
 ## Installation Instructions
 
 Installation instructions for integrations are provided on the [PolarityIO GitHub Page](https://polarityio.github.io/).
+
 ## Polarity
 
 Polarity is a memory-augmentation platform that improves and accelerates analyst decision making.  For more information about the Polarity platform please see: 
