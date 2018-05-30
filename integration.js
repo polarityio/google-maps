@@ -1,98 +1,125 @@
 'use strict';
 
-let _ = require('lodash');
-let rest = require('unirest');
-let async = require('async');
-let util = require('util');
-let log = null;
+const _ = require('lodash');
+const request = require('request');
+const fs = require('fs');
+const config = require('./config/config');
+const async = require('async');
+const util = require('util');
 
-function startup(logger){
+const BASE_URI = 'https://maps.googleapis.com/maps/api/geocode/json';
+
+let log = null;
+let requestWithDefaults;
+
+function startup(logger) {
     log = logger;
+    let defaults = {};
+
+    if (typeof config.request.cert === 'string' && config.request.cert.length > 0) {
+        defaults.cert = fs.readFileSync(config.request.cert);
+    }
+
+    if (typeof config.request.key === 'string' && config.request.key.length > 0) {
+        defaults.key = fs.readFileSync(config.request.key);
+    }
+
+    if (typeof config.request.passphrase === 'string' && config.request.passphrase.length > 0) {
+        defaults.passphrase = config.request.passphrase;
+    }
+
+    if (typeof config.request.ca === 'string' && config.request.ca.length > 0) {
+        defaults.ca = fs.readFileSync(config.request.ca);
+    }
+
+    if (typeof config.request.proxy === 'string' && config.request.proxy.length > 0) {
+        defaults.proxy = config.request.proxy;
+    }
+
+    requestWithDefaults = request.defaults(defaults);
 }
 
-function doLookup(entities, options, cb){
-    log.trace({entities:entities, options:options}, 'Entities & Options');
 
-    if(typeof cb !== 'function'){
-        return;
-    }
-
-    if(typeof(options.apikey) !== 'string' || options.apikey.length === 0){
-        cb("The API key is not set.");
-        return;
-    }
-
-    let entityResults = new Array();
-
+function doLookup(entities, options, cb) {
+    log.trace({entities: entities, options: options}, 'Entities & Options');
+    let entityResults = [];
 
     //look up all of the entities that are geo codes before continuing and push them into the entityResults
-    async.each(entities, function(entity, next){
-        if(entity.types.indexOf('custom.latLong') >= 0 && options.lookupLatLong){
+    async.each(entities, function (entity, next) {
+        if (entity.types.indexOf('custom.latLong') >= 0 && options.lookupLatLong) {
             let latLong = entity.value.split(',');
             entity.latitude = parseFloat(latLong[0]);
             entity.longitude = parseFloat(latLong[1]);
 
-            log.trace("https://maps.googleapis.com/maps/api/geocode/json?latlng="+entity.latitude+","+entity.longitude+"&key="+options.apikey);
-            //do a reverse geocoding lookup using google maps
-            rest.get("https://maps.googleapis.com/maps/api/geocode/json?latlng="+entity.latitude+","+entity.longitude+"&key="+options.apikey)
-                .end(function(response){
-                    if( _.isObject(response.body) ){
-                        let resultsObject = response.body;
-                        log.trace({resultsObject: resultsObject});
+            let requestOptions = {
+                uri: BASE_URI + "?latlng=" + entity.latitude + "," + entity.longitude + "&key=" + options.apikey,
+                method: 'GET',
+                json: true
+            };
 
-                        //if the status is OK and not an error
-                        if(resultsObject.status === "OK"){
-                            //add any tags that the user should know (right now just the first formatted address)
-                            entityResults.push({
-                                entity: entity,
-                                data: {
-                                    summary: [resultsObject.results[0].formatted_address],
-                                    details: entity
-                                }
-                            });
-                        }
-                    }
-                    next();
-                });
-        }else if(entity.types.indexOf('custom.unitedStatesPropertyAddress') >= 0 && options.lookupAddress){
-            log.trace("https://maps.googleapis.com/maps/api/geocode/json?address="+entity.value+"&key="+options.apikey);
+            log.trace(requestOptions.uri);
 
             //do a reverse geocoding lookup using google maps
-            rest.get("https://maps.googleapis.com/maps/api/geocode/json?address="+entity.value+"&key="+options.apikey)
-                .end(function(response){
-                    if( _.isObject(response.body) ){
-                        let resultsObject = response.body;
-                        log.trace({resultsObject: resultsObject});
+            requestWithDefaults(requestOptions, (err, response, body) => {
+                if (_.isObject(body)) {
+                    log.trace({body: body});
 
-                        //if the status is OK and not an error
-                        if(resultsObject.status === "OK" && Array.isArray(resultsObject.results) && resultsObject.results.length > 0){
-                            let result = resultsObject.results[0];
-                            let lat = result.geometry.location.lat;
-                            let lon = result.geometry.location.lng;
-
-                            entity.longitude = lon;
-                            entity.latitude = lat;
-
-                            entity.value = util.format("Lat: %d, Long: %d", lat, lon);
-
-                            //add any tags that the user should know (right now just the first formatted address)
-                            entityResults.push({
-                                entity: entity,
-                                displayValue: resultsObject.results[0].formatted_address,
-                                data: {
-                                    summary: [entity.value],
-                                    details: entity
-                                }
-                            });
-                        }
+                    //if the status is OK and not an error
+                    if (body.status === "OK") {
+                        //add any tags that the user should know (right now just the first formatted address)
+                        entityResults.push({
+                            entity: entity,
+                            data: {
+                                summary: [body.results[0].formatted_address],
+                                details: entity
+                            }
+                        });
                     }
+                }
+                next();
+            });
+        } else if (entity.types.indexOf('custom.unitedStatesPropertyAddress') >= 0 && options.lookupAddress) {
+            let requestOptions = {
+                uri: BASE_URI + "?address=" + entity.value + "&key=" + options.apikey,
+                method: 'GET',
+                json: true
+            };
 
-                    next();
-                });
-        }else{
+            log.trace(requestOptions.uri);
+
+            //do a reverse geocoding lookup using google maps
+            requestWithDefaults(requestOptions, (err, response, body) => {
+                if (_.isObject(body)) {
+                    log.trace({body: body});
+
+                    //if the status is OK and not an error
+                    if (body.status === "OK" && Array.isArray(body.results) && body.results.length > 0) {
+                        let result = body.results[0];
+                        let lat = result.geometry.location.lat;
+                        let lon = result.geometry.location.lng;
+
+                        entity.longitude = lon;
+                        entity.latitude = lat;
+
+                        entity.value = util.format("Lat: %d, Long: %d", lat, lon);
+
+                        //add any tags that the user should know (right now just the first formatted address)
+                        entityResults.push({
+                            entity: entity,
+                            displayValue: body.results[0].formatted_address,
+                            data: {
+                                summary: [entity.value],
+                                details: entity
+                            }
+                        });
+                    }
+                }
+                next();
+            });
+        } else {
             next();
         }
-    },function(){
+    }, function () {
         cb(null, entityResults);
     });
 }
@@ -100,7 +127,7 @@ function doLookup(entities, options, cb){
 function _validateOptions(options) {
     let errors = [];
 
-    if(typeof(options.apikey.value) !== 'string' || options.apikey.value.length === 0){
+    if (typeof(options.apikey.value) !== 'string' || options.apikey.value.length === 0) {
         errors.push({
             key: "apikey",
             message: "You must provide a valid Google Maps API Key"
