@@ -5,7 +5,7 @@
 Polarity's Google Maps integration displays a google map for recognized street addresses in the United States or latitude longitude pairs.
 
 | ![image](https://user-images.githubusercontent.com/306319/40696616-87608682-6394-11e8-8057-37103d695bb4.png) |
-![image](https://user-images.githubusercontent.com/306319/40697040-7e78cd98-6396-11e8-9124-1203190c042b.png)
+![image](https://user-images.githubusercontent.com/306319/40697161-fc7a4500-6396-11e8-9368-9dec04c93e09.png)
 |---|---|
 |*Address Recognition*|*Latitude Longitude Recognition*|
 
