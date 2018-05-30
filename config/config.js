@@ -1,7 +1,6 @@
 module.exports = {
     "name": "Google Maps",
     "acronym": "GM",
-    "entityTypes": ["geo", "string"],
     "logging": {level: 'info'},
     entityTypes: ['geo'],
     customTypes:[
