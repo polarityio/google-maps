@@ -13,136 +13,146 @@ let log = null;
 let requestWithDefaults;
 
 function startup(logger) {
-    log = logger;
-    let defaults = {};
+  log = logger;
+  let defaults = {};
 
-    if (typeof config.request.cert === 'string' && config.request.cert.length > 0) {
-        defaults.cert = fs.readFileSync(config.request.cert);
-    }
+  if (typeof config.request.cert === 'string' && config.request.cert.length > 0) {
+    defaults.cert = fs.readFileSync(config.request.cert);
+  }
 
-    if (typeof config.request.key === 'string' && config.request.key.length > 0) {
-        defaults.key = fs.readFileSync(config.request.key);
-    }
+  if (typeof config.request.key === 'string' && config.request.key.length > 0) {
+    defaults.key = fs.readFileSync(config.request.key);
+  }
 
-    if (typeof config.request.passphrase === 'string' && config.request.passphrase.length > 0) {
-        defaults.passphrase = config.request.passphrase;
-    }
+  if (typeof config.request.passphrase === 'string' && config.request.passphrase.length > 0) {
+    defaults.passphrase = config.request.passphrase;
+  }
 
-    if (typeof config.request.ca === 'string' && config.request.ca.length > 0) {
-        defaults.ca = fs.readFileSync(config.request.ca);
-    }
+  if (typeof config.request.ca === 'string' && config.request.ca.length > 0) {
+    defaults.ca = fs.readFileSync(config.request.ca);
+  }
 
-    if (typeof config.request.proxy === 'string' && config.request.proxy.length > 0) {
-        defaults.proxy = config.request.proxy;
-    }
+  if (typeof config.request.proxy === 'string' && config.request.proxy.length > 0) {
+    defaults.proxy = config.request.proxy;
+  }
 
-    requestWithDefaults = request.defaults(defaults);
+  requestWithDefaults = request.defaults(defaults);
 }
 
-
 function doLookup(entities, options, cb) {
-    log.trace({entities: entities, options: options}, 'Entities & Options');
-    let entityResults = [];
+  log.trace({ entities: entities, options: options }, 'Entities & Options');
+  let entityResults = [];
 
-    //look up all of the entities that are geo codes before continuing and push them into the entityResults
-    async.each(entities, function (entity, next) {
-        if (entity.types.indexOf('custom.latLong') >= 0 && options.lookupLatLong) {
-            let latLong = entity.value.split(',');
-            entity.latitude = parseFloat(latLong[0]);
-            entity.longitude = parseFloat(latLong[1]);
+  //look up all of the entities that are geo codes before continuing and push them into the entityResults
+  async.each(
+    entities,
+    function(entity, next) {
+      if (entity.types.indexOf('custom.latLong') >= 0) {
+        let latLong = entity.value.split(',');
+        entity.latitude = parseFloat(latLong[0]);
+        entity.longitude = parseFloat(latLong[1]);
 
-            let requestOptions = {
-                uri: BASE_URI + "?latlng=" + entity.latitude + "," + entity.longitude + "&key=" + options.apikey,
-                method: 'GET',
-                json: true
-            };
+        let requestOptions = {
+          uri:
+            BASE_URI +
+            '?latlng=' +
+            entity.latitude +
+            ',' +
+            entity.longitude +
+            '&key=' +
+            options.apikey,
+          method: 'GET',
+          json: true
+        };
 
-            log.trace(requestOptions.uri);
+        log.trace(requestOptions.uri);
 
-            //do a reverse geocoding lookup using google maps
-            requestWithDefaults(requestOptions, (err, response, body) => {
-                if (_.isObject(body)) {
-                    log.trace({body: body});
+        //do a reverse geocoding lookup using google maps
+        requestWithDefaults(requestOptions, (err, response, body) => {
+          if (_.isObject(body)) {
+            log.trace({ body: body });
 
-                    //if the status is OK and not an error
-                    if (body.status === "OK") {
-                        //add any tags that the user should know (right now just the first formatted address)
-                        entityResults.push({
-                            entity: entity,
-                            data: {
-                                summary: [body.results[0].formatted_address],
-                                details: entity
-                            }
-                        });
-                    }
+            //if the status is OK and not an error
+            if (body.status === 'OK') {
+              //add any tags that the user should know (right now just the first formatted address)
+              entityResults.push({
+                entity: entity,
+                data: {
+                  summary: [body.results[0].formatted_address],
+                  details: entity
                 }
-                next();
-            });
-        } else if (entity.types.indexOf('custom.unitedStatesPropertyAddress') >= 0 && options.lookupAddress) {
-            let requestOptions = {
-                uri: BASE_URI + "?address=" + entity.value + "&key=" + options.apikey,
-                method: 'GET',
-                json: true
-            };
+              });
+            }
+          }
+          next();
+        });
+      } else if (entity.types.indexOf('custom.unitedStatesPropertyAddress') >= 0) {
+        let requestOptions = {
+          uri: BASE_URI + '?address=' + entity.value + '&key=' + options.apikey,
+          method: 'GET',
+          json: true
+        };
 
-            log.trace(requestOptions.uri);
+        log.trace(requestOptions.uri);
 
-            //do a reverse geocoding lookup using google maps
-            requestWithDefaults(requestOptions, (err, response, body) => {
-                if (_.isObject(body)) {
-                    log.trace({body: body});
+        //do a reverse geocoding lookup using google maps
+        requestWithDefaults(requestOptions, (err, response, body) => {
+          if (_.isObject(body)) {
+            log.trace({ body: body });
 
-                    //if the status is OK and not an error
-                    if (body.status === "OK" && Array.isArray(body.results) && body.results.length > 0) {
-                        let result = body.results[0];
-                        let lat = result.geometry.location.lat;
-                        let lon = result.geometry.location.lng;
+            //if the status is OK and not an error
+            if (body.status === 'OK' && Array.isArray(body.results) && body.results.length > 0) {
+              let result = body.results[0];
+              let lat = result.geometry.location.lat;
+              let lon = result.geometry.location.lng;
 
-                        entity.longitude = lon;
-                        entity.latitude = lat;
+              entity.longitude = lon;
+              entity.latitude = lat;
 
-                        entity.value = util.format("Lat: %d, Long: %d", lat, lon);
+              entity.value = util.format('Lat: %d, Long: %d', lat, lon);
 
-                        //add any tags that the user should know (right now just the first formatted address)
-                        entityResults.push({
-                            entity: entity,
-                            displayValue: body.results[0].formatted_address,
-                            data: {
-                                summary: [entity.value],
-                                details: entity
-                            }
-                        });
-                    }
+              //add any tags that the user should know (right now just the first formatted address)
+              entityResults.push({
+                entity: entity,
+                displayValue: body.results[0].formatted_address,
+                data: {
+                  summary: [entity.value],
+                  details: entity
                 }
-                next();
-            });
-        } else {
-            next();
-        }
-    }, function () {
-        cb(null, entityResults);
-    });
+              });
+            }
+          }
+          next();
+        });
+      } else {
+        next();
+      }
+    },
+    function() {
+      cb(null, entityResults);
+    }
+  );
 }
 
 function _validateOptions(options) {
-    let errors = [];
+  let errors = [];
 
-    if (typeof(options.apikey.value) !== 'string' || options.apikey.value.length === 0) {
-        errors.push({
-            key: "apikey",
-            message: "You must provide a valid Google Maps API Key"
-        });
-    }
+  if (typeof options.apikey.value !== 'string' || options.apikey.value.length === 0) {
+    errors.push({
+      key: 'apikey',
+      message: 'You must provide a valid Google Maps API Key'
+    });
+  }
 
-    return errors;
+  return errors;
 }
 
 function validateOptions(options, cb) {
-    cb(null, _validateOptions(options));
+  cb(null, _validateOptions(options));
 }
 
 module.exports = {
-    doLookup: doLookup,
-    startup: startup,
-    validateOptions: validateOptions
+  doLookup: doLookup,
+  startup: startup,
+  validateOptions: validateOptions
 };
