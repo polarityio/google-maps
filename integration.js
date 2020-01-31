@@ -150,7 +150,7 @@ function doLookup(entities, options, cb) {
       }
     },
     (err) => {
-      Logger.trace({ lookupResults }, 'Returning lookup results to client');
+      log.trace({ lookupResults }, 'Returning lookup results to client');
       cb(err, lookupResults);
     }
   );
