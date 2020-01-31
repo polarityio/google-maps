@@ -69,7 +69,7 @@ function doLookup(entities, options, cb) {
 
         // do a reverse geocoding lookup using google maps
         requestWithDefaults(requestOptions, (err, response, body) => {
-          if (err) return next(err);
+          if (err) return next({ err, detail: 'HTTP Request Error in Latitude/Longitude Request' });
           if (body.status === 'OVER_QUERY_LIMIT') {
             return next({
               err: body.status,
@@ -108,7 +108,7 @@ function doLookup(entities, options, cb) {
 
         // do a reverse geocoding lookup using google maps
         requestWithDefaults(requestOptions, (err, response, body) => {
-          if (err) return next(err);
+          if (err) return next({ err, detail: 'HTTP Request Error in Address Request' });
           if (body.status === 'OVER_QUERY_LIMIT') {
             return next({
               err: body.status,
