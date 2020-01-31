@@ -40,19 +40,19 @@ function startup(logger) {
 }
 
 function doLookup(entities, options, cb) {
-  log.trace({ entities: entities, options: options }, 'Entities & Options');
-  let entityResults = [];
+  log.trace({ entities, options }, 'Entities & Options');
+  let lookupResults = [];
 
-  //look up all of the entities that are geo codes before continuing and push them into the entityResults
+  // look up all of the entities that are geo codes before continuing and push them into the lookupResults
   async.each(
     entities,
     function(entity, next) {
       if (entity.types.indexOf('custom.latLong') >= 0) {
-        let latLong = entity.value.split(',');
+        const latLong = entity.value.split(',');
         entity.latitude = parseFloat(latLong[0]);
         entity.longitude = parseFloat(latLong[1]);
 
-        let requestOptions = {
+        const requestOptions = {
           uri:
             BASE_URI +
             '?latlng=' +
@@ -67,16 +67,27 @@ function doLookup(entities, options, cb) {
 
         log.trace(requestOptions.uri);
 
-        //do a reverse geocoding lookup using google maps
+        // do a reverse geocoding lookup using google maps
         requestWithDefaults(requestOptions, (err, response, body) => {
-          if (_.isObject(body)) {
-            log.trace({ body: body });
+          if (err) return next(err);
+          if (body.status === 'OVER_QUERY_LIMIT') {
+            return next({
+              err: body.status,
+              httpStatus: response.statusCode,
+              body,
+              detail: body.error_message,
+              entity: entity.value
+            });
+          }
 
-            //if the status is OK and not an error
+          if (_.isObject(body)) {
+            log.trace({ body });
+
+            // if the status is OK and not an error
             if (body.status === 'OK') {
-              //add any tags that the user should know (right now just the first formatted address)
-              entityResults.push({
-                entity: entity,
+              // add any tags that the user should know (right now just the first formatted address)
+              lookupResults.push({
+                entity,
                 data: {
                   summary: [body.results[0].formatted_address],
                   details: entity
@@ -87,33 +98,43 @@ function doLookup(entities, options, cb) {
           next();
         });
       } else if (entity.types.indexOf('custom.unitedStatesPropertyAddress') >= 0) {
-        let requestOptions = {
-          uri: BASE_URI + '?address=' + entity.value + '&key=' + options.apikey,
+        const requestOptions = {
+          uri: `${BASE_URI}?address=${entity.value}&key=${options.apikey}`,
           method: 'GET',
           json: true
         };
 
         log.trace(requestOptions.uri);
 
-        //do a reverse geocoding lookup using google maps
+        // do a reverse geocoding lookup using google maps
         requestWithDefaults(requestOptions, (err, response, body) => {
+          if (err) return next(err);
+          if (body.status === 'OVER_QUERY_LIMIT') {
+            return next({
+              err: body.status,
+              httpStatus: response.statusCode,
+              body,
+              detail: body.error_message,
+              entity: entity.value
+            });
+          }
           if (_.isObject(body)) {
-            log.trace({ body: body });
+            log.trace({ body });
 
-            //if the status is OK and not an error
+            // if the status is OK and not an error
             if (body.status === 'OK' && Array.isArray(body.results) && body.results.length > 0) {
-              let result = body.results[0];
-              let lat = result.geometry.location.lat;
-              let lon = result.geometry.location.lng;
+              const result = body.results[0];
+              const lat = result.geometry.location.lat;
+              const lon = result.geometry.location.lng;
 
               entity.longitude = lon;
               entity.latitude = lat;
 
               entity.value = util.format('Lat: %d, Long: %d', lat, lon);
 
-              //add any tags that the user should know (right now just the first formatted address)
-              entityResults.push({
-                entity: entity,
+              // add any tags that the user should know (right now just the first formatted address)
+              lookupResults.push({
+                entity,
                 displayValue: body.results[0].formatted_address,
                 data: {
                   summary: [entity.value],
@@ -128,8 +149,9 @@ function doLookup(entities, options, cb) {
         next();
       }
     },
-    function() {
-      cb(null, entityResults);
+    (err) => {
+      Logger.trace({ lookupResults }, 'Returning lookup results to client');
+      cb(err, lookupResults);
     }
   );
 }
@@ -152,7 +174,7 @@ function validateOptions(options, cb) {
 }
 
 module.exports = {
-  doLookup: doLookup,
-  startup: startup,
-  validateOptions: validateOptions
+  doLookup,
+  startup,
+  validateOptions
 };
