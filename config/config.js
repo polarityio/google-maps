@@ -44,7 +44,7 @@ module.exports = {
       name: 'API Key',
       description: 'Your Google Maps API Key',
       default: '',
-      type: 'text',
+      type: 'password',
       userCanEdit: true,
       adminOnly: false
     }
