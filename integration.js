@@ -135,7 +135,6 @@ function doLookup(entities, options, cb) {
               // add any tags that the user should know (right now just the first formatted address)
               lookupResults.push({
                 entity,
-                displayValue: body.results[0].formatted_address,
                 data: {
                   summary: [entity.value],
                   details: entity
