@@ -53,24 +53,21 @@ function doLookup(entities, options, cb) {
         entity.longitude = parseFloat(latLong[1]);
 
         const requestOptions = {
-          uri:
-            BASE_URI +
-            '?latlng=' +
-            entity.latitude +
-            ',' +
-            entity.longitude +
-            '&key=' +
-            options.apikey,
+          uri: BASE_URI,
           method: 'GET',
-          json: true
+          json: true,
+          qs: {
+            key: options.apikey,
+            latlng: `${entity.latitude},${entity.longitude}`
+          }
         };
 
-        log.trace(requestOptions.uri);
+        log.trace({ requestOptions }, 'Request Options');
 
         // do a reverse geocoding lookup using google maps
         requestWithDefaults(requestOptions, (err, response, body) => {
           if (err) return next({ err, detail: 'HTTP Request Error in Latitude/Longitude Request' });
-          if (body.status === 'OVER_QUERY_LIMIT') {
+          if (body.status === 'OVER_QUERY_LIMIT' || body.status === 'REQUEST_DENIED') {
             return next({
               err: body.status,
               httpStatus: response.statusCode,
@@ -109,7 +106,7 @@ function doLookup(entities, options, cb) {
         // do a reverse geocoding lookup using google maps
         requestWithDefaults(requestOptions, (err, response, body) => {
           if (err) return next({ err, detail: 'HTTP Request Error in Address Request' });
-          if (body.status === 'OVER_QUERY_LIMIT') {
+          if (body.status === 'OVER_QUERY_LIMIT' || body.status === 'REQUEST_DENIED') {
             return next({
               err: body.status,
               httpStatus: response.statusCode,
