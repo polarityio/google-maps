@@ -1,8 +1,8 @@
 {
-  "main": "./integration.js",
   "name": "GoogleMaps",
+  "version": "3.2.1",
+  "main": "./integration.js",
   "description": "Renders a map for all geo coordinate entities.",
-  "version": "3.2.0",
   "private": true,
   "dependencies": {
     "lodash": "^4.17.21",
