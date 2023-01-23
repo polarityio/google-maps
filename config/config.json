@@ -1,6 +1,7 @@
 {
   "name": "Google Maps",
   "acronym": "GM",
+  "defaultColor": "light-grey",
   "logging": {
     "level": "info"
   },
@@ -22,9 +23,7 @@
       "file": "./template/block.hbs"
     }
   },
-  "javascript": [
-    "./javascript/vendor.js"
-  ],
+  "javascript": ["./javascript/vendor.js"],
   "request": {
     "cert": "",
     "key": "",
