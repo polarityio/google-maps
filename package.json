@@ -1,6 +1,6 @@
 {
   "name": "GoogleMaps",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "main": "./integration.js",
   "description": "Renders a map for all geo coordinate entities.",
   "private": true,

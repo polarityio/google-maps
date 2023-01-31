@@ -1,7 +1,7 @@
 module.exports = {
   name: 'Google Maps',
   acronym: 'GM',
-  defaultColor: 'light-grey',
+  defaultColor: 'light-gray',
   logging: { level: 'info' },
   customTypes: [
     {
