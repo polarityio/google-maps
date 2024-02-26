@@ -45,10 +45,10 @@ module.exports = {
     {
       key: 'apikey',
       name: 'API Key',
-      description: 'Your Google Maps API Key',
+      description: 'Your Google Maps API Key.  The API Key must be accessible to all users in order to load the maps API within the Overlay Window.',
       default: '',
       type: 'password',
-      userCanEdit: true,
+      userCanEdit: false,
       adminOnly: false
     }
   ]

@@ -15,7 +15,7 @@ The only required option for the Google Maps integration is your API Key.
 
 ### API Key
 
-Your google maps API Key
+Your google maps API Key.  The API Key must be accessible to all users in order to load the maps API within the Overlay Window.
 
 ## Installation Instructions
 
